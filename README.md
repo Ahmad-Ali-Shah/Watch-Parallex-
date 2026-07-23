@@ -1,131 +1,302 @@
-# Calibre — Scroll-Scrubbed Watch Assembly
+# ⌚ Calibre
 
-A luxury, dark-themed React + TypeScript site where a mechanical watch
-disassembles and reassembles as the user scrolls, built with Framer Motion,
-served by a small Express/Node backend.
+### Scroll-Scrubbed Watch Assembly Experience
 
-## What's actually in the box (read this first)
+A luxury dark-themed **React + TypeScript** web experience where a mechanical watch smoothly disassembles and reassembles as you scroll.
 
-Your ZIP contained a **flattened 50-frame JPEG sequence** (1280×720,
-`ezgif-frame-001.jpg` … `050.jpg`) — a rasterized clip of a watch exploding,
-not separate transparent part layers (individual gears/hands/case as their
-own sprites). Frame 50 was a 0‑byte corrupt file, so it's excluded; the
-project ships with **49 usable frames**, renamed to the generic scheme you
-asked for: `frame_1.jpg` … `frame_49.jpg` in `frontend/public/images/`.
+Built with **Framer Motion** on the frontend and served through a lightweight **Express + Node.js** backend.
 
-That constraint shaped a few honest engineering decisions:
+---
 
-- **The disassemble/reassemble motion itself** is the frame sequence,
-  scrubbed frame-by-frame against scroll position — canvas-based, à la
-  Apple product pages, not CSS-animated. This is what makes it feel
-  "scrubbed" rather than "played."
-- **True per-gear 3D depth layering** isn't possible from a flattened
-  sequence — there's nothing to separate into individual planes. Instead,
-  the component builds a **real 3D depth system** (`transform-style:
-  preserve-3d`, per-layer `translateZ`) around the watch stage using a ring
-  of decorative machined arcs at different z-depths, so parallax, the
-  camera dolly, and depth-of-field are all genuinely functioning — driven
-  by scroll — rather than faked with a single flat layer. If you get a
-  version of this asset with separated part layers (PNG sprites with alpha,
-  or a real 3D/video-with-depth render), swap `DEPTH_PARTS` for real part
-  sprites and the whole depth/parallax/DOF system carries over unchanged.
-- **Frame direction**: I couldn't fully confirm from a static look whether
-  `frame_1` is the assembled state or the exploded one. If the animation
-  looks reversed once you scroll it, open `WatchAssembly.tsx` and flip
-  `const REVERSE = false` to `true` — no need to rename files.
+# Overview
 
-## Project structure
+The provided assets consisted of a **flattened 50-frame JPEG sequence** (`1280 × 720`) rather than separate transparent watch components.
+
+Files ranged from:
 
 ```
+ezgif-frame-001.jpg
+```
+
+to
+
+```
+ezgif-frame-050.jpg
+```
+
+However, **frame 50** was corrupted (0 bytes), so the project uses **49 working frames**.
+
+These frames were renamed to:
+
+```
+frame_1.jpg
+...
+frame_49.jpg
+```
+
+and placed inside:
+
+```
+frontend/public/images/
+```
+
+---
+
+# Engineering Decisions
+
+Because the source assets were flattened image frames instead of separate watch parts, several implementation choices were made.
+
+### Scroll Scrubbing
+
+The assembly animation is driven directly by the frame sequence.
+
+Instead of playing automatically, each frame is synchronized with the user's scroll position, creating an Apple-style scroll-controlled animation.
+
+---
+
+### 3D Depth
+
+True 3D part separation wasn't possible because the source material contains only flattened images.
+
+Instead, the project builds a real 3D scene using:
+
+- `transform-style: preserve-3d`
+- `translateZ()`
+- layered decorative depth rings
+- camera movement
+- parallax
+- depth-of-field
+
+If transparent PNG layers or real 3D assets become available later, they can replace the placeholder depth system without changing the surrounding logic.
+
+---
+
+### Animation Direction
+
+Depending on the original frame order, the animation may appear reversed.
+
+If required, simply open:
+
+```
+WatchAssembly.tsx
+```
+
+and change
+
+```ts
+const REVERSE = false;
+```
+
+to
+
+```ts
+const REVERSE = true;
+```
+
+No file renaming is required.
+
+---
+
+# Project Structure
+
+```text
 watch-assembly/
-├── server.js                 # Express server (serves frontend/dist)
-├── package.json              # root deps: express, compression
+│
+├── server.js
+├── package.json
 ├── README.md
+│
 └── frontend/
-    ├── public/images/        # frame_1.jpg … frame_49.jpg
+    ├── public/
+    │   └── images/
+    │       ├── frame_1.jpg
+    │       ├── ...
+    │       └── frame_49.jpg
+    │
     ├── src/
     │   ├── main.tsx
-    │   ├── App.tsx            # page shell: nav, hero, WatchAssembly, closing, footer
+    │   ├── App.tsx
     │   ├── App.css
-    │   ├── WatchAssembly.tsx  # the scroll-scrubbed component
+    │   ├── WatchAssembly.tsx
     │   ├── WatchAssembly.css
-    │   └── index.css          # global dark theme, Helvetica stack
+    │   └── index.css
+    │
     ├── index.html
     ├── package.json
     ├── vite.config.ts
     └── tsconfig*.json
 ```
 
-## Setup
+---
 
-Requires Node.js 18+.
+# Installation
 
-```bash
-# from the watch-assembly/ root
-npm run setup        # installs root + frontend dependencies
-```
-
-## Local development (hot reload)
+Requires **Node.js 18+**
 
 ```bash
-npm run dev:frontend  # Vite dev server → http://localhost:5173
+npm run setup
 ```
 
-Use this while iterating on the animation — it's much faster than
-rebuilding for every tweak.
+This installs dependencies for both the backend and frontend.
 
-## Production build + serve via Express
+---
+
+# Development
+
+Start the Vite development server:
 
 ```bash
-npm run build   # builds frontend/dist via Vite
-npm start        # Express serves frontend/dist → http://localhost:3000
+npm run dev:frontend
 ```
 
-`server.js` gzips everything, sets long-cache headers on hashed JS/CSS
-bundles, and a shorter 7-day cache on the frame images (so you can swap
-frames later without users being stuck on stale ones for a year).
+The application will be available at:
 
-## Using your own / real assets later
+```
+http://localhost:5173
+```
 
-- **Swap the image sequence**: drop new files into
-  `frontend/public/images/`, update `TOTAL_FRAMES` in `WatchAssembly.tsx`,
-  and adjust `getFramePath()` if your naming differs.
-- **Switch to a `<video>` scrub instead of frames**: replace the canvas
-  drawing logic with `video.currentTime = progress * video.duration` on a
-  `<video>` element with `preload="auto"` — the same `scrollYProgress`
-  motion value drives it, everything else (camera, parallax, DOF, copy)
-  stays as-is.
-- **Real separated part layers**: if you get individual PNGs (mainspring,
-  balance wheel, bridges, hands, case, crystal — each with alpha and its
-  own natural z-order), replace `DEPTH_PARTS`/`DepthRing` with actual
-  `<img>`/`<motion.img>` elements per part, each assigned a `z` and an
-  explode-distance; the parallax/DOF/camera math is reusable directly.
+This mode provides hot reloading and is recommended while developing the animation.
 
-## Key implementation notes
+---
 
-- **Scroll scrub**: `WatchAssembly` renders a tall (`500vh`) track with a
-  `position: sticky` stage inside it. `useScroll({ target, offset: ['start
-  start', 'end end'] })` gives a 0→1 progress across that track, mapped
-  1:1 (no spring) to frame index — so it tracks the scrollbar exactly,
-  including scrolling back up to reassemble.
-- **Canvas over `<img>` swapping**: all 49 frames are preloaded, then
-  drawn to a single `<canvas>` sized/cropped with cover-fit logic. This
-  avoids 49 stacked DOM images and gives a much smoother scrub than
-  toggling `src` or opacity-crossfading `<img>` tags.
-- **Camera dolly**: the `.watch-camera` layer (which contains the canvas
-  stage and the depth rings) gets `rotateX`/`rotateY`/`scale` driven by a
-  *spring-smoothed* copy of scroll progress — smoothed because it's purely
-  atmospheric and never needs to hit an exact frame.
-  layers travel further per scroll unit than background ones (real
-  parallax, not just opacity).
-- **Depth of field**: `.watch-dof` is a masked `backdrop-filter: blur()`
-  layer — a radial gradient mask keeps the exact center (the dial) always
-  sharp, blurs the edges, and the blur strength itself increases mid-scroll
-  (rack focus) and relaxes back down at both the fully-assembled and
-  fully-exploded resting states.
-- **Copy overlays**: three text blocks (`intro`/`mid`/`outro`) each have
-  their own `useTransform` opacity/`y` windows over `scrollYProgress`, so
-  they overlap and fade independently rather than hard-cutting.
-- **Accessibility**: `prefers-reduced-motion` is respected globally
-  (`index.css`); the HUD (progress rail/frame counter) hides on small
-  screens rather than crowding the layout.
+# Production
+
+Build the frontend:
+
+```bash
+npm run build
+```
+
+Serve the production build:
+
+```bash
+npm start
+```
+
+The Express server hosts the application at:
+
+```
+http://localhost:3000
+```
+
+The backend also enables:
+
+- Gzip compression
+- Long-term caching for hashed assets
+- Seven-day caching for image frames
+
+---
+
+# Using Your Own Assets
+
+## Replace the Frame Sequence
+
+Replace the images inside:
+
+```
+frontend/public/images/
+```
+
+Update:
+
+```ts
+TOTAL_FRAMES
+```
+
+inside `WatchAssembly.tsx`.
+
+If the filenames differ, adjust:
+
+```ts
+getFramePath()
+```
+
+accordingly.
+
+---
+
+## Use a Video Instead
+
+Instead of image frames, replace the canvas logic with:
+
+```ts
+video.currentTime = progress * video.duration
+```
+
+The existing scroll progress can drive video playback without changing the camera or animation logic.
+
+---
+
+## Use Real Watch Parts
+
+If separate PNG assets become available (gears, hands, bridges, crystal, etc.), replace the placeholder depth system with individual layered images.
+
+The existing camera movement, depth calculations, and parallax effects are already designed to support this.
+
+---
+
+# Implementation Details
+
+### Scroll Scrubbing
+
+A `500vh` scrolling container with a sticky viewport maps scroll progress directly to the frame sequence.
+
+Scrolling forward disassembles the watch.
+
+Scrolling backward reassembles it.
+
+---
+
+### Canvas Rendering
+
+All 49 frames are preloaded and drawn onto a single `<canvas>`.
+
+This approach provides significantly smoother playback than swapping `<img>` elements.
+
+---
+
+### Camera Motion
+
+The watch stage responds to scroll using:
+
+- Rotation
+- Scale
+- Camera dolly movement
+
+These values are spring-smoothed to create more natural motion.
+
+---
+
+### Parallax
+
+Foreground layers move faster than background layers, producing genuine depth instead of opacity-based illusions.
+
+---
+
+### Depth of Field
+
+A masked `backdrop-filter: blur()` creates a realistic focus effect.
+
+The center of the watch always remains sharp while the outer regions blur dynamically during scrolling.
+
+---
+
+### Content Transitions
+
+Three independent text sections:
+
+- Intro
+- Middle
+- Outro
+
+fade and slide independently using Framer Motion transforms.
+
+---
+
+### Accessibility
+
+The project respects:
+
+- `prefers-reduced-motion`
+
+For smaller screens, the HUD elements automatically hide to maintain a clean layout.
