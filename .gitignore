@@ -5,6 +5,7 @@ node_modules
 # production output
 dist
 dist-ssr
+frontend/dist
 
 # logs
 npm-debug.log*
@@ -12,9 +13,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# local env files
+# local env & cache files
 .env*.local
 .env
+.claude
+server_backup
 
 # IDE
 .vscode
