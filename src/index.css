@@ -41,6 +41,12 @@ body {
   background: var(--bg-studio);
 }
 
+@media (pointer: fine) {
+  html, body, *, a, button, input, select, textarea, label {
+    cursor: none !important;
+  }
+}
+
 #root {
   min-height: 100vh;
 }

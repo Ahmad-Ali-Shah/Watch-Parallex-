@@ -9,6 +9,7 @@ import {
 } from 'react';
 import {
   motion,
+  AnimatePresence,
   useMotionValueEvent,
   useScroll,
   useSpring,
@@ -394,16 +395,26 @@ export default function WatchAssembly() {
           <line x1="10" y1="200" x2="390" y2="200" strokeWidth="0.5" />
         </svg>
 
-        {/* Loader Screen */}
-        {!isReady && (
-          <div className="watch-loader" role="status" aria-live="polite">
-            <div className="watch-loader-mark">CALIBRE 04</div>
-            <div className="watch-loader-bar">
-              <div className="watch-loader-fill" style={{ width: `${loadPercent}%` }} />
-            </div>
-            <div className="watch-loader-pct">CALIBRATING {loadPercent}%</div>
-          </div>
-        )}
+        {/* Full-Screen Preloader Overlay */}
+        <AnimatePresence>
+          {!isReady && (
+            <motion.div 
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
+              className="watch-loader-fullscreen"
+              role="status" 
+              aria-live="polite"
+            >
+              <div className="watch-loader-brand">CALIBRE 04</div>
+              <div className="watch-loader-sub">A STUDY IN PRECISION — DECONSTRUCTED BY SCROLL</div>
+              <div className="watch-loader-bar">
+                <div className="watch-loader-fill" style={{ width: `${loadPercent}%` }} />
+              </div>
+              <div className="watch-loader-pct">PRELOADING 81 HOROLOGY FRAMES • {loadPercent}%</div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* 3D Perspective & Canvas */}
         <div className="watch-perspective">

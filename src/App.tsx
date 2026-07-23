@@ -81,10 +81,6 @@ function Hero() {
           A Study in Precision — Reference 04
         </div>
 
-        <div style={{ margin: '10px 0 20px', display: 'flex', justifyContent: 'center' }}>
-          <JuiceEffect width={140} height={100} particleColor="#b89768" density={25} hoverEnabled={true} />
-        </div>
-
         <h1 className="hero-title">
           The Architecture <span>of Time</span>.
           <br />
