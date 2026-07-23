@@ -1,11 +1,11 @@
 {
-  "name": "watch-assembly-frontend",
+  "name": "watch-assembly-site",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && mkdir -p frontend/dist && cp -r dist/* frontend/dist/",
     "preview": "vite preview"
   },
   "dependencies": {
