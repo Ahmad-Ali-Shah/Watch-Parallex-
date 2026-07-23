@@ -1,0 +1,75 @@
+:root {
+  --bg-studio: #f6f6f8;
+  --bg-card: rgba(255, 255, 255, 0.85);
+  --bg-dark: #0a0a0c;
+  --bg-dark-card: rgba(20, 20, 25, 0.75);
+  --ink: #111115;
+  --ink-muted: #555562;
+  --ink-faint: #8e8e9e;
+  --ink-light: #f4f4f6;
+  --brass: #b89768;
+  --brass-bright: #d4ae78;
+  --brass-dim: #7a6341;
+  --brass-glow: rgba(184, 151, 104, 0.25);
+  --hairline: rgba(0, 0, 0, 0.08);
+  --hairline-dark: rgba(255, 255, 255, 0.12);
+  --accent-cyan: #00d2ff;
+  
+  --font-display: 'Outfit', -apple-system, sans-serif;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-mono: 'Space Grotesk', monospace;
+  --font-body: 'Inter', -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: var(--bg-studio);
+  color: var(--ink);
+  font-family: var(--font-body);
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  overflow-x: hidden;
+  background: var(--bg-studio);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--brass);
+  color: #ffffff;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #eaeaea;
+}
+::-webkit-scrollbar-thumb {
+  background: #c5c5cb;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brass);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

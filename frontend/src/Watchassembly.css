@@ -1,0 +1,546 @@
+/* -------------------------------------------------------------------------
+ * Watch Assembly Track & Studio Stage
+ * ------------------------------------------------------------------- */
+.watch-scroll-track {
+  position: relative;
+  height: 600vh; /* Smooth, manageable 600vh scroll height for ideal scrubbing pace */
+  background: var(--bg-studio);
+}
+
+.watch-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: 
+    radial-gradient(circle at 50% 50%, #ffffff 0%, #f4f4f7 60%, #e8e8ed 100%);
+  user-select: none;
+}
+
+/* Background Technical Grid Pattern */
+.watch-stage-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  background-position: center center;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Center Technical Optics Reticle */
+.watch-optics-reticle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(80vw, 680px);
+  height: min(80vw, 680px);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.35;
+}
+
+.watch-optics-reticle circle,
+.watch-optics-reticle line {
+  stroke: var(--ink-muted);
+  stroke-dasharray: 4 4;
+}
+
+/* 3D Camera Rig */
+.watch-perspective {
+  position: absolute;
+  inset: 0;
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+  z-index: 2;
+}
+
+.watch-camera {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.watch-canvas-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  transform: translate3d(0, 0, 0);
+  transform-style: preserve-3d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.watch-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  mix-blend-mode: multiply; /* Blends studio white background frame cleanly */
+  filter: contrast(1.03) brightness(1.01);
+}
+
+.depth-ring {
+  position: absolute;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* -------------------------------------------------------------------------
+ * Text & Copy Layers
+ * ------------------------------------------------------------------- */
+.watch-copy-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.watch-copy {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(840px, 90vw);
+  text-align: center;
+  pointer-events: auto;
+}
+
+.watch-copy--intro {
+  top: 10vh;
+}
+
+.watch-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--hairline);
+  backdrop-filter: blur(12px);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brass-dim);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  margin-bottom: 20px;
+}
+
+.watch-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brass);
+  box-shadow: 0 0 10px var(--brass);
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 0.4; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+.watch-copy--intro h2 {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(32px, 5vw, 62px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.watch-copy--intro h2 span {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--brass-dim);
+}
+
+.watch-copy--mid {
+  top: 80vh;
+}
+
+.watch-mid-card {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  padding: 20px 32px;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+  display: inline-block;
+}
+
+.watch-mid-card p {
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1.5vw, 18px);
+  line-height: 1.6;
+  font-weight: 400;
+  color: var(--ink-muted);
+}
+
+.watch-copy--outro {
+  bottom: 10vh;
+}
+
+.watch-outro-badge {
+  font-family: var(--font-mono);
+  font-size: clamp(16px, 2vw, 24px);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  padding: 14px 28px;
+  border-radius: 40px;
+  border: 1px solid var(--brass-glow);
+  box-shadow: 0 8px 30px rgba(184, 151, 104, 0.15);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* -------------------------------------------------------------------------
+ * Interactive Component Hotspots Callout Layer
+ * ------------------------------------------------------------------- */
+.watch-hotspots {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 12;
+}
+
+.watch-hotspot-item {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: auto;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.hotspot-ring {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid var(--brass);
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 0 15px rgba(184, 151, 104, 0.4);
+}
+
+.hotspot-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brass);
+}
+
+.hotspot-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-left: 3px solid var(--brass);
+  padding: 12px 18px;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+  max-width: 240px;
+}
+
+.hotspot-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brass-dim);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.hotspot-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.hotspot-desc {
+  font-size: 11px;
+  color: var(--ink-muted);
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+/* -------------------------------------------------------------------------
+ * Telemetry HUD & Control Bar
+ * ------------------------------------------------------------------- */
+.watch-hud-left {
+  position: absolute;
+  left: clamp(20px, 3.5vw, 48px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 15;
+  pointer-events: auto;
+}
+
+.hud-phase-stepper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--hairline);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.hud-phase-btn {
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: all 0.25s ease;
+  text-align: left;
+}
+
+.hud-phase-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.hud-phase-btn.active {
+  background: var(--ink);
+}
+
+.hud-phase-btn.active .hud-phase-num {
+  color: var(--brass-bright);
+}
+
+.hud-phase-btn.active .hud-phase-name {
+  color: #ffffff;
+}
+
+.hud-phase-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--brass-dim);
+  font-weight: 600;
+}
+
+.hud-phase-name {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-muted);
+  transition: color 0.25s ease;
+}
+
+/* Right Rail HUD */
+.watch-hud-right {
+  position: absolute;
+  right: clamp(20px, 3.5vw, 48px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  z-index: 15;
+  pointer-events: auto;
+}
+
+.hud-frame-box {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--hairline);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.hud-frame-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.hud-frame-val {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.08em;
+}
+
+.watch-hud-rail {
+  width: 3px;
+  height: 160px;
+  background: rgba(0, 0, 0, 0.08);
+  position: relative;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.watch-hud-rail-fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: top;
+  background: linear-gradient(to bottom, var(--brass), var(--brass-dim));
+  border-radius: 3px;
+}
+
+/* Bottom Controls Bar (Auto Play, Sound, Reset) */
+.watch-bottom-bar {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 15;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  padding: 8px 18px;
+  border-radius: 40px;
+  border: 1px solid var(--hairline);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+  pointer-events: auto;
+}
+
+.bar-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--ink);
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.bar-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--brass-dim);
+}
+
+.bar-btn.active {
+  background: var(--brass);
+  color: #ffffff;
+}
+
+.bar-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.bar-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--hairline);
+}
+
+/* -------------------------------------------------------------------------
+ * Preloader Loader Screen
+ * ------------------------------------------------------------------- */
+.watch-loader {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  background: var(--bg-studio);
+}
+
+.watch-loader-mark {
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: 0.6em;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.watch-loader-bar {
+  width: 240px;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.watch-loader-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--brass-dim), var(--brass));
+  transition: width 0.15s ease-out;
+  border-radius: 3px;
+}
+
+.watch-loader-pct {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-muted);
+  letter-spacing: 0.15em;
+}
+
+/* -------------------------------------------------------------------------
+ * Responsive Breakpoints
+ * ------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .watch-hud-left {
+    display: none;
+  }
+  .watch-hotspots {
+    display: none;
+  }
+  .watch-copy--intro h2 {
+    font-size: 32px;
+  }
+  .watch-hud-right {
+    right: 16px;
+  }
+  .watch-bottom-bar {
+    bottom: 16px;
+    padding: 6px 12px;
+  }
+  .bar-btn span {
+    display: none;
+  }
+}
