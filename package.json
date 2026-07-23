@@ -1,8 +1,7 @@
 {
-  "name": "watch-assembly-server",
+  "name": "watch-assembly-site",
   "version": "1.0.0",
-  "description": "Express server that serves the WatchAssembly React frontend",
-  "main": "server.js",
+  "description": "Watch Assembly React frontend site",
   "type": "commonjs",
   "scripts": {
     "install:frontend": "cd frontend && npm install",
